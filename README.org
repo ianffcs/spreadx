@@ -1,0 +1,32 @@
+* SpreadX
+** Install npm dependencies
+ #+BEGIN_SRC shell
+  npm install
+ #+END_SRC
+** Start by jacking-in some repl onto your preferred editor :D
+ #+BEGIN_SRC shell
+  npx shadow-cljs
+ #+END_SRC
+** Start shadow/watch to begin the project
+- on shadow clj repl do:
+#+BEGIN_SRC clojure
+(shadow/watch :workspaces)
+;; and when finished the building
+;; if you want some repl,
+(shadow/repl :workspaces)
+#+END_SRC
+- The entrypoint of the web application is on [[http://localhost:8080][entrypoint]]
+** CI Compiling / Usage
+- Added a npm run tests that does this:
+#+BEGIN_SRC shell
+shadow-cljs compile ci && npx karma start --single-run
+#+END_SRC
+** Production Build
+- Run ./build and run jar with java:
+#+BEGIN_SRC shell
+./build && java -jar spread-x.jar
+#+END_SRC
+- Run build on cljs and start application on clojure:
+#+BEGIN_SRC shell
+clj -X:build-cljs  && clj -M -m main
+#+END_SRC

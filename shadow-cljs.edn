@@ -1,0 +1,17 @@
+{:deps   true
+ :builds {:spread-x      {:target     :browser
+                          :output-dir "resources/js/spreadx"
+                          :asset-path "/js/spreadx"
+                          :modules    {:main {:init-fn spread-x/run}}}
+          :workspaces {:target     :browser
+                       :output-dir "resources/public/js/workspaces"
+                       :asset-path "/js/workspaces"
+                       :devtools   {:http-root          "resources/public"
+                                    :http-port          3333
+                                    :http-resource-root "."
+                                    :preloads           [devtools.preload]}
+                       :modules    {:main {:entries [workspaces]}}}
+          :ci         {:target           :karma
+                       :compiler-options {:output-feature-set :es6}
+                       :ns-regexp        "-test$"
+                       :output-to        "target/ci.js"}}}
