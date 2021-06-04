@@ -23,9 +23,8 @@
 shadow-cljs compile ci && npx karma start --single-run
 #+END_SRC
 ** Production Build
-- Run ./build and run jar with java:
 #+BEGIN_SRC shell
-./build && java -jar spread-x.jar
+clj -X:build-cljs && clj -X:build && java -jar spread-x.jar
 #+END_SRC
 - Run build on cljs and start application on clojure:
 #+BEGIN_SRC shell
