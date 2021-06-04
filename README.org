@@ -15,7 +15,8 @@
 ;; if you want some repl,
 (shadow/repl :workspaces)
 #+END_SRC
-- The entrypoint of the web application is on [[http://localhost:8080][entrypoint]]
+- The entrypoint of the workspaces application is on [[http://localhost:3333][entrypoint]]
+- The entrypoint of the web application is on [[http://localhost:3000][entrypoint]]
 ** CI Compiling / Usage
 - Added a npm run tests that does this:
 #+BEGIN_SRC shell
