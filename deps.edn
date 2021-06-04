@@ -8,7 +8,7 @@
         thheller/shadow-cljs         {:mvn/version "2.14.2"}
         org.slf4j/slf4j-simple       {:mvn/version "1.7.30"}
         instaparse/instaparse        {:mvn/version "1.4.10"}}
- :aliases {:build-cljs {:exec-fn core/release}
+ :aliases {:build-cljs {:exec-fn main/release}
            :build      {:extra-deps {seancorfield/depstar {:mvn/version "2.0.216"}}
                         :ns-default hf.depstar
                         :exec-args  {:sync-pom    true
@@ -18,5 +18,5 @@
                                      :jar         "spread-x.jar"
                                      :jar-type    "uber"
                                      :aot         true
-                                     :main-class  core}
+                                     :main-class  main}
                         :exec-fn    hf.depstar/uberjar}}}

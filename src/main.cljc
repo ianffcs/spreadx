@@ -29,7 +29,7 @@
 
 (defonce server (atom nil))
 
-(defn release-prod
+(defn release
   [& _]
   (shadow/release :spread-x))
 
