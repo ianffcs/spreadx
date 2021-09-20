@@ -5,7 +5,8 @@
     [clojure.java.io :as io]
     [shadow.cljs.devtools.api :as shadow]))
 
-(def ^:private idx-html (slurp (io/resource "index.html")))
+(def ^:private idx-html
+  (slurp (io/resource "index.html")))
 
 (defn index
   [_]
@@ -20,7 +21,9 @@
   (-> {::http/type           :jetty
        ::http/resource-path  "./"
        ::http/file-path      "./js"
-       ::http/secure-headers nil                            ;;{:content-security-policy-settings {:object-src "none"}}
+       ::http/secure-headers nil
+       ::http/host "0.0.0.0"
+       ;;{:content-security-policy-settings {:object-src "none"}}
        ::http/port           3000
        ::http/routes         routes
        ::http/join?          false}
@@ -41,4 +44,5 @@
            (-> config-map
                http/create-server
                http/start))))
+
 

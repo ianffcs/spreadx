@@ -17,8 +17,9 @@
 (defn with-mounted-component
   [comp f]
   (let [container         (create-tests-container!)
-        mounted-component (rtl/render (r/as-element comp)
-                                      #js {"container" container})]
+        mounted-component (rtl/render
+                            (r/as-element comp)
+                            #js {"container" container})]
     (try
       (f mounted-component)
       (finally

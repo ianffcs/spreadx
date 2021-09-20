@@ -11,12 +11,15 @@
    :cells        {}
    :sci-ctx      (init {})
    :columns      10
-   :rows         5})
+   :rows         51})
 
 (defn az-range
   "Columns from A-Z (or less)"
   [columns]
-  (map char (take columns (range 65 91))))
+  (map char
+       (take columns
+             (if (<= columns (- 91 65))
+               (range 65 91)))))
 
 (defn table-lines
   "Rows from 0-100 (or less)"
@@ -142,18 +145,20 @@
   [:thead {:style       {:display "table-header-group"}
            :data-testid "thead"}
    [:tr {:style (light-border-style cell-width)}
-    (concat [^{:key :n} [:th {:style (light-border-style cell-width)}]]
-            (map (partial header-fn cell-width) (az-range (:columns cells)))
-            (coll-btn add-col!))]])
+    (concat
+      [^{:key :n} [:th {:style (light-border-style cell-width)}]]
+      (map (partial header-fn cell-width) (az-range (:columns cells)))
+      (coll-btn add-col!))]])
 
 (defn table-body
   [{:keys [rows] :as cells} cell-width actions-map add-row!]
   [:tbody {:style       {:display "table-row-group"}
            :data-testid "tbody"}
-   (concat [^{:key :n} [:tr (merge (light-border-style cell-width) overflow-style)]]
-           (map (partial row-fn cells actions-map cell-width)
-                (table-lines rows))
-           (row-btn add-row!))])
+   (concat
+     [^{:key :n} [:tr (merge (light-border-style cell-width) overflow-style)]]
+     (map (partial row-fn cells actions-map cell-width)
+          (table-lines rows))
+     (row-btn add-row!))])
 
 (defn spread-x-ui
   "Main UI of cells"

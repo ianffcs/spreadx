@@ -14,24 +14,27 @@
     [sci.core :refer [init]]))
 
 (ws/deftest range-cells-get-test
-  (are [expected actual] (= expected (range-cells-get actual))
-                         '(:A0 :A1) [:A0 :A1]
-                         '(:A0 :A1 :A2) [:A0 :A2]
-                         '(:A0 :A1 :B0 :B1) [:B0 :A1]
-                         '(:B0 :B1 :B2 :B3 :B4 :B5 :B6 :B7 :B8 :B9 :B10) [:B0 :B10]))
+  (are [expected actual]
+    (= expected (range-cells-get actual))
+
+    '(:A0 :A1) [:A0 :A1]
+    '(:A0 :A1 :A2) [:A0 :A2]
+    '(:A0 :A1 :B0 :B1) [:B0 :A1]
+    '(:B0 :B1 :B2 :B3 :B4 :B5 :B6 :B7 :B8 :B9 :B10) [:B0 :B10]))
 
 (ws/deftest parse-input->raw-ast-test
-  (are [expected actual] (= expected (input->raw-ast actual))
-                         1 "1"
-                         :A1 "=A1"
-                         "abc" "abc"
-                         '(+ 1 2) "=add(1,2)"
-                         '(+ :A1 :A2) "=add(A1,A2)"
-                         '(+ :A3 (* 2 :A2)) "=add(A3,mul(2,A2))"
-                         '(+ :A0 :A1 :A2 :A3) "=add(A0:A3)"
-                         '(* :B0 :B1 :B2 :B3 :B4 :B5 :B6 :B7 :B8 :B9 :B10) "=mul(B0:B10)"
-                         '(* :B0 :B1 2) "=mul(B0:B1,2)"
-                         '(+ :B0 :B1) "=add(B0:B1)"))
+  (are [expected actual]
+    (= expected (input->raw-ast actual))
+    1 "1"
+    :A1 "=A1"
+    "abc" "abc"
+    '(+ 1 2) "=add(1,2)"
+    '(+ :A1 :A2) "=add(A1,A2)"
+    '(+ :A3 (* 2 :A2)) "=add(A3,mul(2,A2))"
+    '(+ :A0 :A1 :A2 :A3) "=add(A0:A3)"
+    '(* :B0 :B1 :B2 :B3 :B4 :B5 :B6 :B7 :B8 :B9 :B10) "=mul(B0:B10)"
+    '(* :B0 :B1 2) "=mul(B0:B1,2)"
+    '(+ :B0 :B1) "=add(B0:B1)"))
 
 (ws/deftest eval-sheets-raw-ast-test
   (let [env {:sci-ctx (init {})
@@ -152,58 +155,60 @@
                                       :dependencies (:B0 :B1)}
                                  :B0 {:input "8"}
                                  :B1 {:input "10"}}}]
-    (are [expected actual] (= expected actual)
-                           1 (assert-cell env-simple-subs :A0)
-                           11 (assert-cell env-simple-op :A0)
-                           50 (assert-cell env-mul :A0)
-                           80 (assert-cell env-ranged-op :A0)
-                           9 (assert-cell (table {:A0 "=sum(A1:A9)"
-                                                  :A1 "1"
-                                                  :A2 "1"
-                                                  :A3 "1"
-                                                  :A4 "1"
-                                                  :A5 "1"
-                                                  :A6 "1"
-                                                  :A7 "1"
-                                                  :A8 "1"
-                                                  :A9 "1"}) :A0)
-                           "duplicated keys: :A0" (assert-cell (table {:A0 "=A0"}) :A0)
-                           "" (assert-cell (table {:A1 ""}) :A1)
-                           1 (assert-cell (table {:A1 "1"}) :A1)
-                           "A" (assert-cell (table {:A1 "A"}) :A1)
-                           "" (assert-cell (table {:A1 ""
-                                                   :A2 "=A1"}) :A1)
-                           "duplicated keys: :A1" (assert-cell (table {:A1 "=A1"}) :A1)
-                           11 (assert-cell (table {:A1 "=add(A2:A5)"
+    (are [expected actual]
+      (= expected actual)
+
+      1 (assert-cell env-simple-subs :A0)
+      11 (assert-cell env-simple-op :A0)
+      50 (assert-cell env-mul :A0)
+      80 (assert-cell env-ranged-op :A0)
+      9 (assert-cell (table {:A0 "=sum(A1:A9)"
+                             :A1 "1"
+                             :A2 "1"
+                             :A3 "1"
+                             :A4 "1"
+                             :A5 "1"
+                             :A6 "1"
+                             :A7 "1"
+                             :A8 "1"
+                             :A9 "1"}) :A0)
+      "duplicated keys: :A0" (assert-cell (table {:A0 "=A0"}) :A0)
+      "" (assert-cell (table {:A1 ""}) :A1)
+      1 (assert-cell (table {:A1 "1"}) :A1)
+      "A" (assert-cell (table {:A1 "A"}) :A1)
+      "" (assert-cell (table {:A1 ""
+                              :A2 "=A1"}) :A1)
+      "duplicated keys: :A1" (assert-cell (table {:A1 "=A1"}) :A1)
+      11 (assert-cell (table {:A1 "=add(A2:A5)"
+                              :A3 "5"
+                              :A2 "6"}) :A1)
+      17 (assert-cell (table {:A1 "=add(A3,mul(2,A2))"
+                              :A3 "5"
+                              :A2 "6"}) :A1)
+      21 (assert-cell (table {:A1 "=add(A3,mul(2,add(A2,2)))"
+                              :A3 "5"
+                              :A2 "6"}) :A1)
+      5 (assert-cell (table {:A1 "=add(A2,3)"
+                             :A2 "2"}) :A1)
+      (* 2 5 (+ 2 5) (+ 5 6)) (assert-cell (table {:A1 "=mul(2,A3,add(A0,A3),add(A3,A2))"
                                                    :A3 "5"
-                                                   :A2 "6"}) :A1)
-                           17 (assert-cell (table {:A1 "=add(A3,mul(2,A2))"
-                                                   :A3 "5"
-                                                   :A2 "6"}) :A1)
-                           21 (assert-cell (table {:A1 "=add(A3,mul(2,add(A2,2)))"
-                                                   :A3 "5"
-                                                   :A2 "6"}) :A1)
-                           5 (assert-cell (table {:A1 "=add(A2,3)"
-                                                  :A2 "2"}) :A1)
-                           (* 2 5 (+ 2 5) (+ 5 6)) (assert-cell (table {:A1 "=mul(2,A3,add(A0,A3),add(A3,A2))"
-                                                                        :A3 "5"
-                                                                        :A2 "6"
-                                                                        :A0 "2"}) :A1)
-                           3 (assert-cell (table {:A0 "1"
-                                                  :A1 "=A0"
-                                                  :A2 "=A1"
-                                                  :B0 "=sum(A0:A2)"}) :B0)
-                           16 (assert-cell (table {:A1 "=add(add(A0,A3),add(A3,A2))"
-                                                   :A3 "5"
-                                                   :A2 "6"}) :A1)
-                           (* 2 5 (+ (* 2 2) 5) (+ 5 6)) (assert-cell (table {:A1 "=mul(2,A3,add(mul(A0,2),A3),add(A3,A2))"
-                                                                              :A3 "5"
-                                                                              :A2 "6"
-                                                                              :A0 "2"}) :A1)
-                           (* (+ (* (+ 2 6) 2) 5) 2) (assert-cell (table {:A1 "=mul(add(mul(add(A0,A2),2),A3),2)"
-                                                                          :A3 "5"
-                                                                          :A2 "6"
-                                                                          :A0 "2"}) :A1))))
+                                                   :A2 "6"
+                                                   :A0 "2"}) :A1)
+      3 (assert-cell (table {:A0 "1"
+                             :A1 "=A0"
+                             :A2 "=A1"
+                             :B0 "=sum(A0:A2)"}) :B0)
+      16 (assert-cell (table {:A1 "=add(add(A0,A3),add(A3,A2))"
+                              :A3 "5"
+                              :A2 "6"}) :A1)
+      (* 2 5 (+ (* 2 2) 5) (+ 5 6)) (assert-cell (table {:A1 "=mul(2,A3,add(mul(A0,2),A3),add(A3,A2))"
+                                                         :A3 "5"
+                                                         :A2 "6"
+                                                         :A0 "2"}) :A1)
+      (* (+ (* (+ 2 6) 2) 5) 2) (assert-cell (table {:A1 "=mul(add(mul(add(A0,A2),2),A3),2)"
+                                                     :A3 "5"
+                                                     :A2 "6"
+                                                     :A0 "2"}) :A1))))
 
 (ws/deftest get-data-rec-test
   (let [cells {:A1 {:input        "=add(A3,mul(2,A2))",
