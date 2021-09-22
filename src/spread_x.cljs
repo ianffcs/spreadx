@@ -10,16 +10,22 @@
   {:focused-cell nil
    :cells        {}
    :sci-ctx      (init {})
-   :columns      10
-   :rows         51})
+   :columns      30
+   :rows         28})
+
+(defn number-to-letters [letters n]
+  (if (>= n 0)
+    (let [alphabet (map (comp str char) (range 65 91))
+          new-letters (str (nth alphabet (mod n 26)) letters)
+          new-n (dec (Math/floor (/ n 26)))]
+      (recur new-letters new-n))
+    letters))
 
 (defn az-range
   "Columns from A-Z (or less)"
   [columns]
-  (map char
-       (take columns
-             (if (<= columns (- 91 65))
-               (range 65 91)))))
+  (mapv #(number-to-letters "" %)
+       (range (inc columns))))
 
 (defn table-lines
   "Rows from 0-100 (or less)"
@@ -126,7 +132,7 @@
 (defn add-col!
   "Extend table with one column"
   [*cells]
-  (swap! *cells update :columns #(min (inc %) 26)))
+  (swap! *cells update :columns inc))
 
 (defn coll-btn
   "button for adding column"
