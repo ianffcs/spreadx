@@ -25,7 +25,7 @@
   "Columns from A-Z (or less)"
   [columns]
   (mapv #(number-to-letters "" %)
-       (range (inc columns))))
+        (range (inc columns))))
 
 (defn table-lines
   "Rows from 0-100 (or less)"
